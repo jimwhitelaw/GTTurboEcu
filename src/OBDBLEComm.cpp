@@ -15,7 +15,7 @@ void OBDBLEComm::init(const String& deviceName) {
     serialBLE = new BleSerial();
     //delay(2000);
     serialBLE->begin(deviceName.c_str());
-    serialBLE->setTimeout(10);
+    serialBLE->setTimeout(1000);
     setToDefaults();
 
 }
@@ -35,7 +35,6 @@ void OBDBLEComm::writeEnd() {
 
     serialBLE->flush();
 };
-
 
 void OBDBLEComm::writeEndOK() {
     writeTo("OK");
@@ -70,7 +69,6 @@ void OBDBLEComm::writeTo(char const *response) {
     serialBLE->print(response);
 }
 
-
 // void OBDBLEComm::writeTo(uint8_t cChar) {
 //     serial->print((char *)cChar);
 // }
@@ -88,19 +86,14 @@ void OBDBLEComm::writeEndPidTo(char const *response) {
 }
 
 void OBDBLEComm::readData(String& rxData) {
-    if (serialBLE->available())
+    while (serialBLE->available())
     {
-        for (int i = 0; i < serialBLE->available(); i++)
+        uint8_t rec = serialBLE->read();
+        if (rec != 0x0D) 
         {
-            uint8_t rec = serialBLE->read();
-            if (rec != 0x0D) 
-            {
-                rxData[i] = (char)rec;
-                Serial.print("Received char: ");
-                Serial.println(rxData[i]);
-            }
-        }            
-    }
+            rxData += (char)rec;
+        }
+    }            
        
     if (isEchoEnable()) {
         writeTo(rxData.c_str());
