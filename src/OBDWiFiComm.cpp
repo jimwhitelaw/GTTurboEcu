@@ -100,8 +100,7 @@ void OBDWiFiComm::readData(String& rxData) {
 
     if(client)
     {
-        rxData
-         = client.readStringUntil(SERIAL_END_CHAR);
+        rxData = client.readStringUntil(SERIAL_END_CHAR);
         if (isEchoEnable()) 
         {
             writeTo(rxData.c_str());

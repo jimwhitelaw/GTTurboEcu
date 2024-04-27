@@ -3,30 +3,28 @@
 
 #include <Arduino.h>
 #include "definitions.h"
-#if USE_WIFI
 #include "OBDWiFiComm.h"
-#else
+#include "OBDBLEComm.h"
 #include "OBDSerialComm.h"
-#endif
 
 class ATCommands
 {
 
 public:
-#if USE_WIFI
     ATCommands(OBDWiFiComm *connection);
-#else
+    ATCommands(OBDBLEComm *connection);
     ATCommands(OBDSerialComm *connection);
-#endif
+   
     ~ATCommands();
 
     bool process(const String &string);
 
 private:
-    // Variables
-#if USE_WIFI
+#if defined(OBD_TYPE_WIFI)
     OBDWiFiComm *connection;
-#else
+#elif defined(OBD_TYPE_BLE)
+    OBDBLEComm *connection;
+#else // default is OBD_TYPE_BTC (Bluetooth Classic)
     OBDSerialComm *connection;
 #endif
     void ATD();

@@ -4,9 +4,11 @@
 #include <Arduino.h>
 #include "definitions.h"
 
-#if USE_WIFI
+#if defined (OBD_TYPE_WIFI)
 #include "OBDWiFiComm.h"
-#else
+#elif defined (OBD_TYPE_BLE)
+#include "OBDBLEComm.h"
+#else 
 #include "OBDSerialComm.h"
 #endif
 
@@ -115,23 +117,19 @@ public:
     String elmRequest;
 
 private:
-#if USE_WIFI
+#if defined(OBD_TYPE_WIFI)
     OBDWiFiComm *_connection;
+#elif defined(OBD_TYPE_BLE)
+    OBDBLEComm *_connection;
 #else
     OBDSerialComm *_connection;
 #endif
     ATCommands *_atProcessor;
-
     PidProcessor *_pidProcessor;
-
     String _lastCommand;
-
     bool isCycleUp = true;
-
     uint32_t cycle = 0;
-
     bool processRequest(String &command);
-
     bool isValidHex(const char *pid);
 };
 

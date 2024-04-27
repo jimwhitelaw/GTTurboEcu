@@ -1,6 +1,6 @@
 #include "ELMulator.h"
 
-#if USE_WIFI
+#if defined(OBD_TYPE_WIFI)
 ELMulator::ELMulator()
 {
     _connection = new OBDWiFiComm();
@@ -10,10 +10,20 @@ ELMulator::ELMulator()
     elmRequest.reserve(MAX_REQUEST_SIZE);
     elmRequest = "";
 }
-#else
-ELMulator::ELMulator(uint32_t baudRate, uint8_t rxPin, uint8_t txPin)
+#elif defined(OBD_TYPE_BLE)
+ELMulator::ELMulator()
 {
-    _connection = new OBDSerialComm(baudRate, rxPin, txPin);
+    _connection = new OBDBLEComm();
+    _atProcessor = new ATCommands(_connection);
+    _pidProcessor = new PidProcessor(_connection);
+    _lastCommand = "";
+    elmRequest.reserve(MAX_REQUEST_SIZE);
+    elmRequest = "";
+}
+#else // default is OBD_TYPE_BTC (Bluetooth Classic)
+ELMulator::ELMulator()
+{
+    _connection = new OBDSerialComm();
     _atProcessor = new ATCommands(_connection);
     _pidProcessor = new PidProcessor(_connection);
     _lastCommand = "";
@@ -21,8 +31,6 @@ ELMulator::ELMulator(uint32_t baudRate, uint8_t rxPin, uint8_t txPin)
     elmRequest = "";
 }
 #endif
-
-
 
 ELMulator::~ELMulator() {}
 

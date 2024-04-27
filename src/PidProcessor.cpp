@@ -1,17 +1,21 @@
 #include "PidProcessor.h"
 
-#if USE_WIFI
+#if defined(OBD_TYPE_WIFI)
 PidProcessor::PidProcessor(OBDWiFiComm *connection) {
     _connection = connection;
     resetPidMode01Array();
 };
-#else
+#elif defined(OBD_TYPE_BLE)
+PidProcessor::PidProcessor(OBDBLEComm *connection) {
+    _connection = connection;
+    resetPidMode01Array();
+};
+#else // default is OBD_TYPE_BTC (Bluetooth Classic)
 PidProcessor::PidProcessor(OBDSerialComm *connection) {
     _connection = connection;
     resetPidMode01Array();
 };
 #endif
-
 
 bool PidProcessor::process(String& command) {
     bool processed = false;

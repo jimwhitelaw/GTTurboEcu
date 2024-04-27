@@ -7,13 +7,16 @@
 #include <Print.h>
 #include "OBDWiFiComm.h"
 #include "OBDSerialComm.h"
+#include "OBDBLEComm.h"
 
 class PidProcessor
 {
 
 public:
     PidProcessor(OBDWiFiComm *connection);
+    PidProcessor(OBDBLEComm *connection);
     PidProcessor(OBDSerialComm *connection);
+    
     bool process(String &string);
 
     bool registerMode01Pid(uint32_t pid);
@@ -33,8 +36,10 @@ public:
     bool isMode22(const String &command);
 
 private:
-#if USE_WIFI
+#if defined(OBD_TYPE_WIFI)
     OBDWiFiComm *_connection;
+#elif defined(OBD_TYPE_BLE)
+    OBDBLEComm *_connection;
 #else
     OBDSerialComm *_connection;
 #endif

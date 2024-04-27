@@ -5,9 +5,9 @@
 
 // true == We are running on hardware that has builtin Bluetooth
 // false == We are using hardware that has BT module attached via GPIO pins
-#define BLUETOOTH_BUILTIN true  
+#define BLUETOOTH_BUILTIN true
 
-#define USE_WIFI true
+#define OBD_TYPE_BLE
 
 #define DO_DEBUG true
 #define DEBUG(x) do {if (DO_DEBUG) { Serial.println(x); } } while (0)

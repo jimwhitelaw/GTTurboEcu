@@ -1,11 +1,15 @@
 #include "ATCommands.h"
 #include "definitions.h"
 
-#if USE_WIFI
+#if defined(OBD_TYPE_WIFI)
 ATCommands::ATCommands(OBDWiFiComm *connection) {
     this->connection = connection;
 }
-#else
+#elif defined(OBD_TYPE_BLE)
+ATCommands::ATCommands(OBDBLEComm *connection) {
+    this->connection = connection;
+}
+#else // default is OBD_TYPE_BTC (Bluetooth Classic)
 ATCommands::ATCommands(OBDSerialComm *connection) {
     this->connection = connection;
 }
